@@ -61,7 +61,6 @@ Stores embeddings and performs ultra-fast similarity search.
 
 # 📂 Project Structure
 
-```bash
 AI-Image-Search/
 │── app.py
 │── db.py
