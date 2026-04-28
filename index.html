@@ -1,0 +1,1055 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Image Search</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+    /* ===================================== */
+/* RESET */
+/* ===================================== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+    color:#222;
+}
+
+/* ===================================== */
+/* LOGIN PAGE */
+/* ===================================== */
+.login-page{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+.login-card{
+    width:380px;
+    background:rgba(255,255,255,0.95);
+    padding:40px 35px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+}
+
+.login-icon{
+    width:75px;
+    height:75px;
+    margin:auto;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    margin-bottom:18px;
+}
+
+.login-card h1{
+    font-size:30px;
+    margin-bottom:8px;
+    color:#111827;
+}
+
+.login-card p{
+    color:#6b7280;
+    margin-bottom:20px;
+}
+
+.login-card input{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+}
+
+.login-card input:focus{
+    border-color:#2563eb;
+}
+
+.login-card button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.login-card button:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+.login-card small{
+    display:block;
+    margin-top:15px;
+    color:#6b7280;
+}
+
+/* ===================================== */
+/* DASHBOARD */
+/* ===================================== */
+#dashboard{
+    display:none;
+    min-height:100vh;
+}
+
+/* ===================================== */
+/* TOPBAR */
+/* ===================================== */
+.topbar{
+    height:70px;
+    background:#111827;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 25px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+    position:sticky;
+    top:0;
+    z-index:999;
+}
+
+.top-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.top-left h2{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.menu-btn{
+    font-size:24px;
+    cursor:pointer;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    font-size:20px;
+}
+
+.user-box{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#1f2937;
+    padding:8px 12px;
+    border-radius:30px;
+    font-size:15px;
+}
+
+/* ===================================== */
+/* SIDEBAR */
+/* ===================================== */
+.sidebar{
+    position:fixed;
+    top:70px;
+    left:-250px;
+    width:250px;
+    height:calc(100vh - 70px);
+    background:#111827;
+    transition:0.3s;
+    padding-top:20px;
+    z-index:998;
+}
+
+.sidebar a{
+    display:block;
+    padding:16px 22px;
+    color:white;
+    text-decoration:none;
+    font-size:15px;
+    transition:0.3s;
+}
+
+.sidebar a i{
+    margin-right:10px;
+    width:20px;
+}
+
+.sidebar a:hover{
+    background:#1f2937;
+    padding-left:30px;
+}
+
+.sidebar a.active{
+    background:#2563eb;
+}
+
+.sidebar .logout{
+    margin-top:25px;
+    color:#f87171;
+}
+
+/* ===================================== */
+/* MAIN CONTENT */
+/* ===================================== */
+.main-content{
+    padding:30px;
+}
+
+/* ===================================== */
+/* PAGE SECTION */
+/* ===================================== */
+.page{
+    display:none;
+}
+
+.active-page{
+    display:block;
+}
+
+/* ===================================== */
+/* UPLOAD CARD */
+/* ===================================== */
+.upload-card,
+info-card{
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.upload-card h2,
+info-card h2{
+    margin-bottom:8px;
+    color:#111827;
+}
+
+.upload-card p{
+    color:#6b7280;
+    margin-bottom:20px;
+}
+
+.upload-card input[type="file"]{
+    width:100%;
+    margin-bottom:20px;
+    padding:10px;
+    border:1px dashed #cbd5e1;
+    border-radius:10px;
+    background:#f8fafc;
+}
+
+.upload-area{
+    text-align:center;
+}
+
+/* ===================================== */
+/* PREVIEW IMAGE */
+/* ===================================== */
+#preview{
+    width:320px;
+    max-width:100%;
+    max-height:320px;
+    border-radius:15px;
+    object-fit:contain;
+    border:2px solid #e5e7eb;
+    display:none;
+    margin:0 auto 20px auto;
+}
+
+/* ===================================== */
+/* BUTTONS */
+/* ===================================== */
+.btn-group{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.btn-group button,
+.info-card button{
+    padding:13px 20px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    transition:0.3s;
+}
+
+.btn-group button:hover,
+.info-card button:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+.green-btn{
+    background:#16a34a !important;
+}
+
+.green-btn:hover{
+    background:#15803d !important;
+}
+
+/* ===================================== */
+/* LOADING */
+/* ===================================== */
+.loading{
+    display:none;
+    margin-top:20px;
+    padding:12px;
+    background:#eff6ff;
+    color:#2563eb;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+/* ===================================== */
+/* RESULTS */
+/* ===================================== */
+.result-title{
+    margin:30px 0 20px;
+    color:#111827;
+}
+
+.results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;
+}
+
+.result-card{
+    background:white;
+    border-radius:16px;
+    padding:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.result-card:hover{
+    transform:translateY(-6px);
+}
+
+.result-card img{
+    width:100%;
+    height:180px;
+    object-fit:contain;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+}
+
+.result-card h4{
+    margin-top:12px;
+    margin-bottom:6px;
+    color:#111827;
+}
+
+.result-card p{
+    color:#2563eb;
+    font-weight:bold;
+}
+
+/* ===================================== */
+/* INFO PAGES */
+/* ===================================== */
+.info-card{
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.info-card h2{
+    margin-bottom:15px;
+}
+
+.info-card p{
+    margin-bottom:15px;
+    color:#555;
+    line-height:1.6;
+}
+
+.info-card ul{
+    padding-left:20px;
+    margin-bottom:15px;
+}
+
+.info-card li{
+    margin-bottom:8px;
+}
+
+.info-card label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.info-card select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+
+
+/* ===================================== */
+/* SETTINGS */
+/* ===================================== */
+.info-card label{
+    display:block;
+    margin:15px 0 8px;
+    font-weight:bold;
+}
+
+.info-card select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+/* ===================================== */
+/* RESPONSIVE */
+/* ===================================== */
+@media(max-width:992px){
+
+.main-content{
+    padding:20px;
+}
+
+.results-grid{
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+}
+
+}
+
+@media(max-width:768px){
+
+.topbar{
+    padding:0 15px;
+}
+
+.top-left h2{
+    font-size:18px;
+}
+
+.user-box span{
+    display:none;
+}
+
+.sidebar{
+    width:220px;
+    left:-220px;
+}
+
+.login-card{
+    width:92%;
+}
+
+.btn-group{
+    flex-direction:column;
+}
+
+.btn-group button{
+    width:100%;
+}
+
+#preview{
+    width:100%;
+}
+
+}
+
+@media(max-width:480px){
+
+.main-content{
+    padding:15px;
+}
+
+.upload-card,
+.info-card{
+    padding:20px;
+}
+
+.results-grid{
+    grid-template-columns:1fr;
+}
+
+.top-left{
+    gap:10px;
+}
+
+.top-right{
+    gap:10px;
+}
+
+}
+body.dark-mode{
+    background:#111827;
+    color:white;
+}
+
+body.dark-mode .upload-card,
+body.dark-mode .info-card,
+body.dark-mode .result-card,
+body.dark-mode .login-card{
+    background:#1f2937;
+    color:white;
+}
+
+body.dark-mode .topbar,
+body.dark-mode .sidebar{
+    background:#000;
+}
+
+body.dark-mode input,
+body.dark-mode select{
+    background:#374151;
+    color:white;
+    border:1px solid #555;
+}
+
+body.dark-mode p,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4{
+    color:white;
+}
+.feedback-box{
+    margin-top:12px;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+}
+
+.feedback-box button{
+    border:none;
+    padding:10px 14px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:18px;
+    color:white;
+    transition:0.3s;
+}
+
+/* Default Colors */
+.up-btn{
+    background:#16a34a;
+}
+
+.down-btn{
+    background:#dc2626;
+}
+
+/* Hover */
+.up-btn:hover,
+.down-btn:hover{
+    transform:scale(1.08);
+}
+
+/* Click Active */
+.up-btn.active{
+    box-shadow:0 0 12px rgba(22,163,74,0.7);
+    transform:scale(1.12);
+}
+
+.down-btn.active{
+    box-shadow:0 0 12px rgba(220,38,38,0.7);
+    transform:scale(1.12);
+}
+
+/* Thank you text */
+.thanks-msg{
+    margin-top:8px;
+    text-align:center;
+    font-size:14px;
+    color:#2563eb;
+    font-weight:bold;
+}
+/* ===================================== */
+/* PREMIUM ADMIN PANEL SECTION */
+/* ===================================== */
+
+#adminPage .info-card{
+    max-width:900px;
+    margin:auto;
+    padding:40px;
+    border-radius:24px;
+    background:linear-gradient(145deg,#ffffff,#f8fafc);
+    box-shadow:0 20px 45px rgba(0,0,0,0.08);
+    border:1px solid #e5e7eb;
+}
+
+#adminPage h2{
+    font-size:38px;
+    font-weight:700;
+    color:#111827;
+    margin-bottom:10px;
+}
+
+#adminPage p{
+    font-size:18px;
+    color:#6b7280;
+    margin-bottom:20px;
+}
+
+#adminPage hr{
+    border:none;
+    height:1px;
+    background:#e5e7eb;
+    margin:30px 0;
+}
+
+/* Inputs */
+#adminPage input[type="text"],
+#adminPage input[type="file"]{
+    width:100%;
+    padding:16px 18px;
+    border:1px solid #d1d5db;
+    border-radius:14px;
+    background:#ffffff;
+    font-size:16px;
+    margin-bottom:18px;
+    transition:0.3s ease;
+}
+
+#adminPage input:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+}
+
+/* Buttons */
+#adminPage button{
+    padding:14px 28px;
+    border:none;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:600;
+    color:white;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+/* Add Product Button */
+#adminPage form button{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    box-shadow:0 10px 20px rgba(37,99,235,0.25);
+}
+
+#adminPage form button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 25px rgba(37,99,235,0.35);
+}
+
+/* Delete Button */
+#adminPage button[onclick="deleteProduct()"]{
+    background:linear-gradient(135deg,#dc2626,#b91c1c);
+    box-shadow:0 10px 20px rgba(220,38,38,0.22);
+}
+
+#adminPage button[onclick="deleteProduct()"]:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 25px rgba(220,38,38,0.35);
+}
+
+/* Labels */
+#adminPage p{
+    font-weight:500;
+}
+
+/* Dark Mode */
+body.dark-mode #adminPage .info-card{
+    background:#1f2937;
+    border:1px solid #374151;
+}
+
+body.dark-mode #adminPage h2,
+body.dark-mode #adminPage p{
+    color:white;
+}
+
+body.dark-mode #adminPage input{
+    background:#374151;
+    color:white;
+    border:1px solid #4b5563;
+}
+
+body.dark-mode #adminPage hr{
+    background:#4b5563;
+}
+
+
+</style> 
+</head>
+
+<body>
+
+
+<!-- ================================= -->
+<!-- LOGIN PAGE -->
+<!-- ================================= -->
+
+<div class="login-page" id="loginPage">
+
+    <div class="login-card">
+
+        <div class="login-icon">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+
+        <h1>AI Image Search</h1>
+        <p>Login to continue</p>
+
+        <input type="text" placeholder="Username">
+        <input type="password" placeholder="Password">
+
+        <button onclick="openDashboard()">Login</button>
+
+        <small>Don't have an account? Contact Admin</small>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- DASHBOARD -->
+<!-- ================================= -->
+
+<div id="dashboard">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <div class="top-left">
+            <i class="fa-solid fa-bars menu-btn" onclick="toggleSidebar()"></i>
+            <h2>AI Image Search</h2>
+        </div>
+
+        <div class="top-right">
+            <i class="fa-regular fa-bell"></i>
+
+            <div class="user-box">
+                <i class="fa-solid fa-user-circle"></i>
+                <span>User</span>
+            </div>
+        </div>
+         </div>
+         <!-- admin panel-->
+         
+
+         <div class="page" id="adminPage">
+
+    <div class="info-card">
+
+        <div class="admin-top">
+            <h2>⚡ Admin Panel</h2>
+            <p>Manage inventory products in real time</p>
+        </div>
+
+        <!-- ADD PRODUCT -->
+        <div class="admin-box">
+
+            <h3>➕ Add New Product</h3>
+
+            <form action="/add_product" method="POST" enctype="multipart/form-data">
+
+                <input type="text"
+                       name="name"
+                       placeholder="Enter Product Name"
+                       required>
+
+                <input type="file"
+                       name="image"
+                       required>
+
+                <button type="submit">
+                    Add Product
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- DELETE PRODUCT -->
+        <div class="admin-box danger-box">
+
+            <h3>🗑 Delete Product</h3>
+
+            <input type="text"
+                   id="deleteId"
+                   placeholder="Enter Product ID">
+
+            <button onclick="deleteProduct()">
+                Delete Product
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+   
+
+
+
+  
+
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+
+        <a class="active" onclick="showPage('searchPage')">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+        </a>
+
+        <a onclick="showPage('historyPage')">
+            <i class="fa-solid fa-clock-rotate-left"></i> Search History
+        </a>
+
+        <a onclick="showPage('adminPage')">
+           <i class="fa-solid fa-user-shield"></i> Admin Panel
+        </a>
+
+        <a onclick="showPage('aboutPage')">
+            <i class="fa-solid fa-circle-info"></i> About Project
+        </a>
+
+        <a onclick="showPage('settingsPage')">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+
+        <a onclick="logout()" class="logout">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- SEARCH PAGE -->
+        <div class="page active-page" id="searchPage">
+
+            <div class="upload-card">
+
+                <h2>Upload Image</h2>
+                <p>Upload an image to find similar products</p>
+
+                <!-- FIXED FORM -->
+                <form action="/" method="POST" enctype="multipart/form-data">
+
+                
+
+                <!-- Image Search -->
+                <input type="file"
+                name="image"
+                id="fileInput"
+                onchange="previewImage(event)">
+
+                    <div class="upload-area">
+
+                        <img id="preview">
+
+                        <div class="btn-group">
+
+                            <button type="submit"
+                                    onclick="showLoading()">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                Search Full Image
+                            </button>
+
+                        
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+                <div class="loading" id="loading">
+                    Searching for similar products...
+                </div>
+
+            </div>
+
+
+            <!-- RESULTS -->
+            <h2 class="result-title">Results</h2>
+
+            <div class="results-grid">
+
+                {% for item in results %}
+                <div class="result-card">
+
+                  <img src="/{{ item.image_path }}">
+
+                    <h4>{{ item.name }}</h4>
+
+                    <p>Similarity: {{ item.similarity }}%</p>
+
+                    <div class="feedback-box">
+
+    <button class="up-btn"
+            onclick="feedback(this,'{{ item.name }}','up')">
+        👍
+    </button>
+
+    <button class="down-btn"
+            onclick="feedback(this,'{{ item.name }}','down')">
+        👎
+    </button>
+
+</div>
+
+<div class="thanks-msg"></div>
+
+
+                   
+
+                    
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+ 
+
+        <!-- ABOUT -->
+        <div class="page" id="aboutPage">
+
+            <div class="info-card">
+
+                <h2>About Project</h2>
+
+                <p>
+                    This project uses CLIP model + ChromaDB
+                    to perform image-based product search.
+                </p>
+
+                <ul>
+                    <li>Python</li>
+                    <li>Flask</li>
+                    <li>CLIP AI Model</li>
+                    <li>ChromaDB</li>
+                    <li>HTML CSS JavaScript</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- HISTORY -->
+        <div class="page" id="historyPage">
+
+            <div class="info-card">
+
+                <h2>Search History</h2>
+
+                 {% if history %}
+                       <ul>
+                {% for item in history %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No searches stored yet.</p>
+{% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- SETTINGS -->
+        <div class="page" id="settingsPage">
+
+            <div class="info-card">
+
+                <h2>Settings</h2>
+
+                <label>Top Results to Display</label>
+                <select>
+                    <option>5</option>
+                    <option>10</option>
+                </select>
+                <label>Theme</label>
+
+               <select id="themeSelect">
+               <option value="light">Light</option>
+               <option value="dark">Dark</option>
+               </select>
+
+               <button onclick="saveTheme()">Save Changes</button>
+
+               
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+window.onload = function () {
+    const hasResults = "{{ 'true' if results else 'false' }}";
+
+    if (hasResults === "true") {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+    }
+};
+</script>
+
+</body>
+</html>
