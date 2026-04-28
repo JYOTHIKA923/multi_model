@@ -1,0 +1,6 @@
+flask
+chromadb
+torch
+torchvision
+transformers
+pillow
